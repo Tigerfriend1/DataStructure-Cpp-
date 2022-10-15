@@ -37,7 +37,8 @@ public:
 	//int Length( ); //count the number of nodes in a list
 	//void Merge(List&, List&);//the merged nodes in a sequential order
 private:
-	Node<T>* first;
+	Node<T>* last;
+	Node<T>* head; //head node
 };
 
 template <class T>
@@ -84,7 +85,9 @@ Node<T>::~Node() {
 
 template <class T>
 List<T>::List() {
-	first = 0;
+	last = 0;
+	head->num=-1;
+	head->link=head;
 }
 
 template <class T>
@@ -92,16 +95,16 @@ List<T>::~List() {
 }
 
 template <class T>
-void List<T>::Add(T& x) {
-	if (!first) {
-		first = new Node<T>(x);
-		first->link = 0;
-	}
-	else {
-		Node<T>* n = new Node<T>(x);
-		n->link = first;
-		first = n;
-	}
+void List<T>::Add(T& x) { //last node로 더하는 함수를 작성해보자. //입력받으면서 정렬하는 함수를 만들어보자.
+	// if (!first) {
+	// 	first = new Node<T>(x);
+	// 	first->link = 0;//circular로 하려면 0대신 자기자신을 넣으면 된다.
+	// }
+	//else
+	Node<T>* n = new Node<T>(x);
+	n->link = 0;
+	last = n;
+	//수정함.
 }
 
 template <class T>
@@ -207,16 +210,14 @@ template <class T>
 CircularList<T>::~CircularList() { }
 
 template <class T>
-void CircularList<T>::Add(T& x) {
+void CircularList<T>::Add(T& x) { //headnode존재, last사용, circular로 구현하기.
+	Node<T>* p = last; //p는 현재 last위치의 node다.
 	Node<T>* newNode = new Node<T>(x);
-	if (this->first) { //nonempty list
-		newNode->link = this->first->link;
-		this->first->link = newNode;
-	}
-	else { //empty list
-		this->first = newNode;
-		newNode->link = newNode;
-	}
+	p->link = newNode; // head를 가르키던 p는 이제 newNode를 가르킨다.
+	newNode->link = this->head; //newNode를 head를 가르키게한다
+	this->last->link = newNode; //last를 newNode를 가르키게 만든다.
+	
+	//수정완료
 }
 
 template <class T>
@@ -414,7 +415,7 @@ void ListTesting() {
 }
 
 
-template <class T>
+
 int main() {
     int ch;
 	cout << endl << "List Testing begins: " << endl;
@@ -439,7 +440,7 @@ int main() {
 			Print_List(st[1]);
 			Print_List(st[3]);
 			break;
-		case 5:	return;
+		case 5:	return 0;
 		}
 	}
 	system("Pause");
