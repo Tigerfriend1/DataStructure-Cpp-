@@ -1,41 +1,36 @@
-﻿//소스 코드4.2: Circular Linked List - template 버젼으로 전환하기 
-//head node를 갖고 circular list로서   class List{ private: Node *last;}로 구현하기
-//난수가 입력되면 정렬된 list를 만든다.
-//두개의 list를 merge하여 정렬된 list를 만든다.
-// 출력은 iterator를 사용한다.
-// class Node, List, ListIterator
+﻿// template, last, AddSort함수를 구현하여 입력함과 동시에 sort할 수 있도록 구현.
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
-template <class T> class List;
+
 template <class T> class ListIterator;
 template <class T> class CircularList;
 
 template <class T>
 class Node {
-	friend class List<T>;
 	friend class ListIterator<T>;
 	friend class CircularList<T>;
 public:
 	Node(T elememt =0 , Node<T>* next = 0);
 	~Node();
 private:
-	T num;
+	T num ;
 	Node<T>* link;
 };
 
 template <class T>
-class List {
+class CircularList {
 	friend class ListIterator<T>;
-	friend class CircularList<T>;
 public:
-	List();
-	~List();
-	virtual void Add(T&);
-	virtual void Delete(T&);//주어진 x 값을 갖는 노드를 삭제
+    CircularList();
+	~CircularList();
+	void Add(T&);
+	void AddSort(T&); //입력받으면서 동시에 sort할 수 있는 함수를 제작.
 	virtual void Show();
-	//int Length( ); //count the number of nodes in a list
-	//void Merge(List&, List&);//the merged nodes in a sequential order
+    void Merge(CircularList<T>&);
+    //T Rand(); //난수생성기, 난수를 생성하여 AddSort함수에 넣는다.
+	
 private:
 	Node<T>* last;
 	Node<T>* head; //head node
@@ -44,11 +39,11 @@ private:
 template <class T>
 class ListIterator {
 public:
-	ListIterator(const List<T>& lst);
+	ListIterator(const CircularList<T>& lst);
 	~ListIterator();
-	bool NotNull();
-	bool NextNotNull();
-	T* First();
+	// bool NotNull();
+	// bool NextNotNull();
+	T* Last();
 	T* Next();
 	T& operator*() const;
 	T* operator->()const;
@@ -59,23 +54,11 @@ public:
 	T* GetCurrent();
 private:
 	Node<T>* current; //pointer to nodes
-	const List<T>& list;//existing list
+	const CircularList<T>& list;//existing list
 };
 
 template <class T>
-class CircularList : public List<T> {
-public:
-	CircularList();
-	~CircularList();
-	void Add(T&);
-	void Delete(T&);
-	void Show();
-	void DeleteNum(T& x);
-};
-
-//#include "listiterator.h"
-template <class T>
-Node<T>::Node(T element, Node* next) {
+Node<T>::Node(T element, Node<T>* next) {
 	num = element;
 	link = next;
 }
@@ -83,75 +66,102 @@ template <class T>
 Node<T>::~Node() {
 }
 
+
 template <class T>
-List<T>::List() {
-	last = 0;
-	head->num=-1;
-	head->link=head;
+CircularList<T>::CircularList() {
+    head = new Node<T>(-1);
+    last = new Node<T>(0);
+	//head->num=-1;  //헤드의 값은 -1이다.
+	head->link=head; //처음 헤드는 자기자신을 가르킨다.
+    last=head;
 }
 
 template <class T>
-List<T>::~List() {
+CircularList<T>::~CircularList() { }
+
+
+
+template <class T>
+void CircularList<T>::Add(T& x) { //이건 정렬이 아닌 last위치에 넣는 Add함수
+	Node<T>* p = this->last; //p는 현재 last위치의 node다.
+	Node<T>* newNode = new Node<T>(x);
+	p->link = newNode; // head를 가르키던 p는 이제 newNode를 가르킨다.
+	newNode->link = this->head; //newNode를 head를 가르키게한다
+	this->last= newNode; //last를 newNode를 가르키게 만든다.
 }
 
 template <class T>
-void List<T>::Add(T& x) { //last node로 더하는 함수를 작성해보자. //입력받으면서 정렬하는 함수를 만들어보자.
-	// if (!first) {
-	// 	first = new Node<T>(x);
-	// 	first->link = 0;//circular로 하려면 0대신 자기자신을 넣으면 된다.
-	// }
-	//else
-	Node<T>* n = new Node<T>(x);
-	n->link = 0;
-	last = n;
-	//수정함.
+void CircularList<T>::AddSort(T& x) { //입력 받으며 정렬하는 함수
+	Node<T>* p = this->head->link; //헤드 다음번을 가르킴
+	Node<T>* q = this->head; //헤드를 가르킴(p 한칸 뒤에서 따라감)
+	Node<T>* newNode = new Node<T>(x);
+	if (this->last->num<=x){ //last값 즉, 현재 가장 큰값보다 더 큰값일때
+		p=this->last;
+		newNode->link=this->head;
+		p->link=newNode;
+		this->last=newNode;
+		return;
+	}
+	while(!(x>q->num && x<=p->num)){ //x값이 q와 p 사이에 올때까지 실행
+		p=p->link; //한칸씩 전진
+		q=q->link;
+	}
+	q->link=newNode; // q는 newNode를 가르킴
+	newNode->link=p; // newNode는 p를 가르킴
+	
 }
 
 template <class T>
-void List<T>::Delete(T& x) {
-	if (first == NULL) cout << " List is empty" << endl;
-	// body of delete
-	return;
-}
-
-template <class T>
-void List<T>::Show() {
-	Node<T>* current;
-	current = first;
-	if (first)
-		while (current)
+void CircularList<T>::Show() {
+	Node<T>* np;
+	np = this->head->link;
+	if (this->last->num > 0)
+		do
 		{
-			cout << current->num << " ";
-			current = current->link;
-		}
+			cout << np->num << " ";
+			np = np->link;
+		} while (np != this->head);
 	else cout << "List is empty" << endl;
 }
 
-/*
-ListIterator::ListIterator(Node *ll){
+template <class T>
+void CircularList<T>::Merge(CircularList<T>& l){
+    Node<T>* p = this->head->link; //p는 A의 첫번째 노드를 가르킴
+	Node<T>* q = l.head->link; //q는 B의 첫번째 노드를 가르킴
+    Node<T>* c = this->head->link;
+    do
+    {
+        if(p->num <= q->num){ //A가 B보다 작으면
+            c=p;
+            
+            p=p->link;
+        }
+        else{
+            c=q; //B가 A보다 값이 작으면
+            
+            q=q->link;
+        }
+        c=c->link
+        
+        if((p==this->head)&&(q==l.head)){//p,q 모두 lastnode에 도착하면 탈출
+            c
+            break;
+        }
+    } while (1); 
+    
+    
+    return;
 }
-*/
 
 template <class T>
-ListIterator<T>::ListIterator(const List<T>& lst) :
-	list(lst), current(lst.first) {
+ListIterator<T>::ListIterator(const CircularList<T>& lst) :
+	list(lst), current(lst.last) {
 	cout << "List Iterator is constructed" << endl;
 }
 
 template <class T>
-bool ListIterator<T>::NotNull() {
-	if (list.first == 0) return false;
-}
-
-template <class T>
-bool ListIterator<T>::NextNotNull() {
-	if (current->link != 0) return true;
-	else return false;
-}
-
-template <class T>
-T* ListIterator<T>::First() {
-	return &list.first->num;
+T* ListIterator<T>::Last() {
+	return &list.last->num;
 }
 
 template <class T>
@@ -203,246 +213,34 @@ bool ListIterator<T>::operator == (const ListIterator<T> right) const {
 	return current == right.current;
 }
 
-template <class T>
-CircularList<T>::CircularList() : List<T>() { }
+int main(){
 
-template <class T>
-CircularList<T>::~CircularList() { }
-
-template <class T>
-void CircularList<T>::Add(T& x) { //headnode존재, last사용, circular로 구현하기.
-	Node<T>* p = last; //p는 현재 last위치의 node다.
-	Node<T>* newNode = new Node<T>(x);
-	p->link = newNode; // head를 가르키던 p는 이제 newNode를 가르킨다.
-	newNode->link = this->head; //newNode를 head를 가르키게한다
-	this->last->link = newNode; //last를 newNode를 가르키게 만든다.
+	int value=10;
 	
-	//수정완료
-}
+	
+	CircularList<int> st[3];
 
-template <class T>
-void CircularList<T>::Delete(T& x) {
-	Node<T>* newNode = new Node<T>(x);
-	if (this->first) { //nonempty list
-		Node<T>* Temp = this->first->link;
-		this->first->link = this->first->link->link;
-		delete Temp;
-	}
-	else { //empty list
-		cout << "empty list" << endl;
-	}
-}
+    for (int i=0; i<3; i++){
+        value=rand() % 20;      //난수를 생성하여 값을 AddSort에 넣음
+        st[0].AddSort(value);      
+    }
+    cout<<"A is : ";
+	st[0].Show();
 
-template <class T>
-void CircularList<T>::DeleteNum(T& x) {
-	//Node *newNode = new Node(x);
-	//first, medium, last üũ
-	if (this->first) { //nonempty list
-		Node<T>* CurrentNode = this->first;
-		Node<T>* PreNode = this->first;
-		bool find = false;
+    
 
-		//while (CurrentNode->link != first || CurrentNode == first)
-		while (CurrentNode->link != this->first)
-		{
-			if (CurrentNode->num == x)
-			{
-				find = true;
+    for (int i=0; i<3; i++){
+        value=rand() % 20;      //난수를 생성하여 값을 AddSort에 넣음
+        st[1].AddSort(value);      
+    }
+    cout<<endl<<"B is : ";
+	st[1].Show();
 
-				if (CurrentNode == this->first) // first delete case
-				{
-					Node<T>* Temp = CurrentNode;
+    st[0].Merge(st[1]);
 
-					while (CurrentNode->link != this->first)
-					{
-						CurrentNode = CurrentNode->link;
-					}
-					this->first = this->first->link;
-					delete Temp;
+    st[2]=st[0];
 
-					CurrentNode->link = this->first;
-					break;
-				}
-				else if (CurrentNode->link != this->first) // medium delete case
-				{
-					PreNode->link = CurrentNode->link;
-					delete CurrentNode;
-					break;
-				}
-			}
-
-			PreNode = CurrentNode;
-			CurrentNode = CurrentNode->link;
-		}//while end
-
-		if (find == false)
-		{
-			if (CurrentNode->num == x) // last Delte Case
-			{
-				PreNode->link = this->first;
-				delete CurrentNode;
-				find = true;
-			}
-
-		}
-		if (find == false)
-			cout << "can't find " << x << endl;
-	}
-	else { //empty list
-		cout << "empty list" << endl;
-	}
-
-}
-
-template <class T>
-void CircularList<T>::Show() {
-	Node<T>* np;
-	np = this->first;
-	if (np->num > 0)
-		do
-		{
-			cout << np->num << " ";
-			np = np->link;
-		} while (np != this->first);
-	else cout << "List is empty" << endl;
-}
-
-/* listIteratorTest.cpp - List Iterator를 사용
-- Add( )에서 학생들이 실습할 코드로
-  1) add된 데이터를 last node로 추가하는 코드 작성,
-  2) 입력된 값이 sort되도록 add( )를 수정
-  3) sum(xi * xi+5)를 구하는 코드 작성
-*/
-
-//int printAll(const List& l);//list iterator를 사용하여 작성하는 연습
-//int sumProductFifthElement(const List& l);//list iterator를 사용하여 작성하는 연습
-
-template <class T>
-T sum(const List<T>& l)
-{
-	ListIterator<T> li(l);
-	if (!li.NotNull()) return 0;
-	int retvalue = *li.First();
-	while (li.NextNotNull() == true) {
-		++li;//current를 증가시킴
-		//retvalue = retvalue + *li.Next( );
-		retvalue = retvalue + *li.GetCurrent();//현재 current가 가르키는 node의 값을 가져옴
-	}
-	return retvalue;
-}
-
-
-template <class T>
-double avg(const List<T>& l)
-{
-	ListIterator<T> li(l);
-	if (!li.NotNull()) return 0;
-	int retvalue = *li.First();
-	int count = 1;
-	while (li.NextNotNull() == true) {
-		++li;
-		count++;
-		//retvalue = retvalue + *li.Next( );
-		retvalue = retvalue + *li.GetCurrent();
-	}
-
-	double result = (double)retvalue / count;
-
-	return result;
-}
-
-
-template <class T>
-T min(const List<T>& l)
-{
-	ListIterator<T> li(l);
-	if (!li.NotNull()) return -1;
-	int minValue = *li.First();
-
-	while (li.NextNotNull() == true) {
-		++li;
-		if (minValue > * li.GetCurrent())
-		{
-			minValue = *li.GetCurrent();
-		}
-	}
-	return minValue;
-}
-
-
-template <class T>
-T max(const List<T>& l)
-{
-	ListIterator<T> li(l);
-	if (!li.NotNull()) return -1;
-	int maxValue = *li.First();
-
-	while (li.NextNotNull() == true) {
-		++li;
-		if (maxValue < *li.GetCurrent())
-		{
-			maxValue = *li.GetCurrent();
-		}
-	}
-	return maxValue;
-}
-
-template <class T>
-void ListTesting() {
-	int ch;
-	List<T> st;
-	while (1)
-	{
-		cout << "\n1.Add  2.Delete  3.Show  4. sum 5.avg 6.min 7.max 8.exit\nEnter ur choice: ";
-		cin >> ch;
-		switch (ch)
-		{
-		case 1:  cout << "enter the element ";
-			cin >> ch;
-			st.Add(ch);
-			break;
-		case 2:  st.Delete(ch);  break;
-		case 3:  st.Show(); break;
-		case 4:  cout << "sum( ) = " << sum(st) << endl; break;
-		case 5:  cout << "avg( ) = " << avg(st) << endl; break;
-		case 6:  cout << "min( ) = " << min(st) << endl; break;
-		case 7:  cout << "max( ) = " << max(st) << endl; break;
-		case 8:  return;
-		}
-	}
-
-	return;
-}
-
-
-
-int main() {
-    int ch;
-	cout << endl << "List Testing begins: " << endl;
-	CircularList<int> st[4];
-	while (1)
-	{
-		cout << "\n1.Make_List1  2.Make_List 3.Merge  4.Print_List  5.exit\nEnter ur choice: ";
-		cin >> ch;
-		switch (ch)
-		{
-		case 1:	
-			Make_List(st[0]);
-			break;
-		case 2:
-			Make_List(st[1]);
-			break;
-		case 3:	
-			st[2] = st[0].Merge(st[1]);
-			break;
-		case 4:
-			Print_List(st[0]);
-			Print_List(st[1]);
-			Print_List(st[3]);
-			break;
-		case 5:	return 0;
-		}
-	}
-	system("Pause");
+    st[2].Show(); //merge
+	//system("Pause");
     return 0;
 }
