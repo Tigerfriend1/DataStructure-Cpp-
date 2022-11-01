@@ -28,7 +28,7 @@ public:
 	void Add(T&);
 	void AddSort(T&); //입력받으면서 동시에 sort할 수 있는 함수를 제작.
 	virtual void Show();
-    void Merge(CircularList<T>&);
+    CircularList<T>& Merge(CircularList<T>&);
     //T Rand(); //난수생성기, 난수를 생성하여 AddSort함수에 넣는다.
 	
 private:
@@ -125,32 +125,38 @@ void CircularList<T>::Show() {
 }
 
 template <class T>
-void CircularList<T>::Merge(CircularList<T>& l){
+CircularList<T>& CircularList<T>::Merge(CircularList<T>& l){
+	CircularList<T> mlist;
+	Node<T>* r = this->head; //r은 p나q를 따라감
     Node<T>* p = this->head->link; //p는 A의 첫번째 노드를 가르킴
 	Node<T>* q = l.head->link; //q는 B의 첫번째 노드를 가르킴
-    Node<T>* c = this->head->link;
+    
     do
     {
-        if(p->num <= q->num){ //A가 B보다 작으면
-            c=p;
-            
-            p=p->link;
+		Node<T>* c;
+        if((p->num <= q->num)&&p->num!=-1){ //A가 B보다 작으면
+            c=r; //r값을 c에 백업
+			r=p; //p의 현재값 받음
+            p=p->link; //p는 한칸 전진
+			r->link=c; //r값 뒤에 c를 붙임
+			
         }
         else{
-            c=q; //B가 A보다 값이 작으면
-            
+            c=r; //B가 A보다 값이 작으면
+            r=q;
             q=q->link;
+			r->link=c;
         }
-        c=c->link
+        
         
         if((p==this->head)&&(q==l.head)){//p,q 모두 lastnode에 도착하면 탈출
-            c
+            mlist.last = this -> last;
             break;
         }
     } while (1); 
     
     
-    return;
+    return mlist;
 }
 
 template <class T>
