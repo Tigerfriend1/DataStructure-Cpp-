@@ -29,7 +29,7 @@ public:
 	void Insert(T);
 	void Merge(CircularDoublyList<T>&);
 	bool Delete(T);
-	template<class T>
+	//template<class T>
 	friend ostream& operator<<(ostream&, CircularDoublyList<T>&);
 private:
 	int n; //number of items
@@ -221,55 +221,55 @@ int main()
 	CircularDoublyList<float> a, b;
 	CircularDoublyListIterator<float> iter(a);
 
-	float weight;
-	while (select != 'q' || select != 'Q')
-	{
-		cout << endl << "Select command: a: Add to List a, b: Add to List b, d: Delete, m: Merge, p: PrintAll, q: exit" << endl;
-		cin >> select;
+	// float weight;
+	// while (select != 'q' || select != 'Q')
+	// {
+	// 	cout << endl << "Select command: a: Add to List a, b: Add to List b, d: Delete, m: Merge, p: PrintAll, q: exit" << endl;
+	// 	cin >> select;
 
-		switch (select)
-		{
-		case 'a':
-			cout << "List a에 추가할 값을 입력 : " << endl;
-			cin >> weight;
-			a.Insert(weight);
-			break;
-		case 'b':
-			cout << "List b에 추가할 값을 입력 : " << endl;
-			cin >> weight;
-			b.Insert(weight);
-			break;
-		case 'd':
-			cout << "List a와 b에서 삭제할 값을 입력 : " << endl;
-			cin >> weight;
-			if (a.Delete(weight))
-				cout << "List a에서" << weight << "값이 삭제됨." << endl;
-			else
-				cout << "List a에" << weight << "값이 없음." << endl;
-			if (b.Delete(weight))
-				cout << "List b에서" << weight << "값이 삭제됨." << endl;
-			else
-				cout << "List b에" << weight << "값이 없음." << endl;
-			break;
-		case 'm':
-			// TODO : a+b
-			a.Merge(b);
-			break;
-		case 'p':
-			cout << "List a의 출력: " << endl;
-			cout << a << endl;
-			cout << "List b의 출력: " << endl;
-			cout << b << endl;
-			break;
-		case 'q':
-		case 'Q':
-			cout << "Exit program.." << endl;
-			break;
-		default:
-			cout << "WRONG INPUT  " << endl;
-			cout << "Re-Enter" << endl;
-		}
-	}
-	system("pause");
-	return 0;
+	// 	switch (select)
+	// 	{
+	// 	case 'a':
+	// 		cout << "List a에 추가할 값을 입력 : " << endl;
+	// 		cin >> weight;
+	// 		a.Insert(weight);
+	// 		break;
+	// 	case 'b':
+	// 		cout << "List b에 추가할 값을 입력 : " << endl;
+	// 		cin >> weight;
+	// 		b.Insert(weight);
+	// 		break;
+	// 	case 'd':
+	// 		cout << "List a와 b에서 삭제할 값을 입력 : " << endl;
+	// 		cin >> weight;
+	// 		if (a.Delete(weight))
+	// 			cout << "List a에서" << weight << "값이 삭제됨." << endl;
+	// 		else
+	// 			cout << "List a에" << weight << "값이 없음." << endl;
+	// 		if (b.Delete(weight))
+	// 			cout << "List b에서" << weight << "값이 삭제됨." << endl;
+	// 		else
+	// 			cout << "List b에" << weight << "값이 없음." << endl;
+	// 		break;
+	// 	case 'm':
+	// 		// TODO : a+b
+	// 		a.Merge(b);
+	// 		break;
+	// 	case 'p':
+	// 		cout << "List a의 출력: " << endl;
+	// 		cout << a << endl;
+	// 		cout << "List b의 출력: " << endl;
+	// 		cout << b << endl;
+	// 		break;
+	// 	case 'q':
+	// 	case 'Q':
+	// 		cout << "Exit program.." << endl;
+	// 		break;
+	// 	default:
+	// 		cout << "WRONG INPUT  " << endl;
+	// 		cout << "Re-Enter" << endl;
+	// 	}
+	// }
+	// system("pause");
+	 return 0;
 }
