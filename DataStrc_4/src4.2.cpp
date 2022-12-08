@@ -127,33 +127,51 @@ void CircularList<T>::Show() {
 template <class T>
 CircularList<T>& CircularList<T>::Merge(CircularList<T>& l){
 	CircularList<T> mlist;
-	Node<T>* r = this->head; //r은 p나q를 따라감
+	Node<T>* a = this->head; //r은 p나q를 따라감
     Node<T>* p = this->head->link; //p는 A의 첫번째 노드를 가르킴
 	Node<T>* q = l.head->link; //q는 B의 첫번째 노드를 가르킴
-    
-    do
-    {
-		Node<T>* c;
-        if((p->num <= q->num)&&p->num!=-1){ //A가 B보다 작으면
-            c=r; //r값을 c에 백업
-			r=p; //p의 현재값 받음
-            p=p->link; //p는 한칸 전진
-			r->link=c; //r값 뒤에 c를 붙임
+    Node<T>* b = l.head;
+    if(p->num <= q->num) { //A시작부분이 B보다 작으면 A노드에다가 붙인다.
+		do {
+			if(p->num <= q->num){
+				
+				a=a->link;;
+				p=p->link;
+
+			}
+			else{
+
+			}
+		} while(1);
+	}
+
+	else{ // B가 더 작으면 B노드에다가 붙인다.
+
+	}	
+		// do
+    	// {
+		
+
+        // if((p->num <= q->num)&&p->num!=-1){ //A가 B보다 작으면
+        //     c=r; //r값을 c에 백업
+		// 	r=p; //p의 현재값 받음
+        //     p=p->link; //p는 한칸 전진
+		// 	r->link=c; //r값 뒤에 c를 붙임
 			
-        }
-        else{
-            c=r; //B가 A보다 값이 작으면
-            r=q;
-            q=q->link;
-			r->link=c;
-        }
+        // }
+        // else{
+        //     c=r; //B가 A보다 값이 작으면
+        //     r=q;
+        //     q=q->link;
+		// 	r->link=c;
+        // }
         
         
-        if((p==this->head)&&(q==l.head)){//p,q 모두 lastnode에 도착하면 탈출
-            mlist.last = this -> last;
-            break;
-        }
-    } while (1); 
+        // if((p==this->head)&&(q==l.head)){//p,q 모두 lastnode에 도착하면 탈출
+        //     mlist.last = this -> last;
+        //     break;
+        // }
+    	//} while (1); 
     
     
     return mlist;

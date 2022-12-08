@@ -1,3 +1,7 @@
+//조건1. 입력 받은 후 sort하기
+//조건2. 입력 받으며 sort하기
+//헤드노드가 있는 원형리스트에서 sort하는게 시험 문제.
+//여기는 cin으로 구현되어있는데, 귀찮기 때문에 GetData(a. num)으로 구현해서 난수로 하면 좀 더 수월할것.
 //소스 코드4.1: Linked List
 /*
 template 사용 시에는 클래스 멤버 함수의 정의와 구현부를 *.h 파일과 *.cpp 파일로 분리할 수 없음. 하나의 file로 처리
@@ -18,7 +22,7 @@ public:
 	ChainNode(T element = 0);
 private:
 	T data;
-	ChainNode<T>* link;
+	ChainNode<T>* link; //Node의 주소를 가지고 있다.
 };
 
 template<class T> class Chain {
@@ -28,13 +32,15 @@ public:
 	void Delete(void); //delete the first element after first
 	int Length();
 	void Add(const T& element); //add a new node after first
+	//AddSorted() 입력이 들어오면 순서에 맞에 link할 수 있게 만들어라. 루프를 돌려서 만들자.while
 	void Invert();
 	void Concatenate(Chain<T> b);
-	template <class T>
+	//void mergesorted(Chain<T> b) /입력은 난수로 입력받고 c=a.mergesorted(b);로 하는게 편함.
+	
 	friend ostream& operator<<(ostream&, Chain<T>);//template <class T>포함해야 compiler가 처리
 	//int Minimum( );
 private:
-	ChainNode<T>* first;
+	ChainNode<T>* first; // list의 처음을 가르키는것! 포인터 하나임.
 };
 
 template<class T>
@@ -159,8 +165,9 @@ T* ChainIterator<T>::First() {
 template<class T>
 T* ChainIterator<T>::Next() {
 	if (current) {
-		current = current->link;
-		return &current->data;
+		current = current->link; //현재 current가 가르키고 있는 link의 값을 current에 넣어라.
+		//참고로 link값은 Add(T&)함수에서 다음 노드를 가르키게 설정.
+		return &current->data; //바뀐 current의 데이터 값을 반환하라.
 	}
 	else return 0;
 }
@@ -183,7 +190,7 @@ int Show(const Chain<T>& l) {
 	while (li.NextNotNull()) //make sure that next element exists
 	{
 		retvalue = *li.Next();
-		cout << " <- " << retvalue;
+		cout << " -> " << retvalue;
 	}
 	return retvalue;
 }
@@ -285,6 +292,7 @@ int main(void) {
 		case 5:
 			cout << endl << "Concatenated chain" << endl;
 			a.Concatenate(b);
+			//c=a.MergeSorted(b);로 구현
 			Show(a);
 			cout << endl;
 			break;

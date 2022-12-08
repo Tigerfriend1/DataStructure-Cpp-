@@ -4,6 +4,6 @@ using namespace std;
 
 
 int main() {
-    cout << "TEST중입니다." << endl;
+    cout << "for testing" << endl;
     return 0;
 }

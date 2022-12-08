@@ -1,16 +1,9 @@
 ﻿//소스코드 5.1: binary tree
-#pragma once
+//#pragma once
 //make a binary tree 
-/*
-1. preorder, postorder, copy, == (equal)를 test한다.
-2. 두개의 binary tree를 만들어 equal 테스트한다.
-3. NonrecInorder()를 구현한다
-4. class InorderIterator를 구현한다.
-5. class Queue를 사용하여 LevelOrder()를 구현한다.
 
-expression = A + B * C –D를 TREE로 만드는 코딩
+//split(), delete()
 
-*/
 #include <time.h>
 #include <iostream>
 #include <stdio.h>
@@ -166,24 +159,6 @@ void Queue<KeyType>::Output()
 		cout << i << ":" << queue[i] << endl;
 }
 
-//make a binary tree 
-/*
-1. preorder, postorder, copy, == (equal)를 test한다.
-2. 두개의 binary tree를 만들어 equal 테스트한다.
-3. NonrecInorder()를 구현한다
-4. class InorderIterator를 구현한다.
-5. class Queue를 사용하여 LevelOrder()를 구현한다.
-
-   expression = A + B * C –D를 TREE로 만드는 코딩
-6. template version으로 만드는 것
-7. inorder iterator 처럼 level order로 binary tree를 traverse하는 LevelIterator를 구현
-8. PostorderIterator 구현
-9. count # of of leaf nodes
-10. SwapTree(): swap left and right child of every node
-*/
-
-//inorder(), postorder(), preorder() -> NonrecInorder() -> class InorderIterator -> Next() -> LevelOrder() -> NoStackInorder() -> Copy() -> equal()
-
 class Tree;
 
 class TreeNode {
@@ -220,6 +195,7 @@ public:
 	Tree() { root = 0; };
 
 	bool Insert(int);
+	void Split(int i, Tree& B, Tree& C, int& x);
 	int Delete(int);//임의 값 x를 delete하는 구현 실습
 	void inorder();
 	void preorder();
@@ -267,9 +243,9 @@ int* InorderIterator::Next()
 	else return 0;
 }
 
-void Tree::inorder()
+void Tree::inorder() //driving 함수
 {
-	inorder(root);
+	inorder(root); //work 함수 / 오버로딩을 통해 구현
 }
 
 void Tree::preorder()
@@ -362,11 +338,124 @@ bool Tree::Insert(int x) {//binary search tree를 만드는 입력 => A + B * C�
 	else q->RightChild = p;
 	return true;
 }
+
+void Tree::Split(int i, Tree& B, Tree& C, int& x)
+
+{
+
+	if (!root) {// empty tree
+
+		B.root = C.root = 0; x = 0;
+
+		return;
+
+	}
+
+
+
+	int mode = 0;
+
+	TreeNode* prev = root;
+
+	TreeNode* current = root;
+
+	C.root = root;
+
+	while (current)
+
+		if (i == current->data) {  // split at t
+
+			if (current == root) {
+
+				x = current->data;
+
+				B.root = current->LeftChild; 
+
+				C.root = current->RightChild;
+
+				return;
+
+			}
+
+			if (mode == 0) {//left child을 뜯어 낸다
+
+				prev->LeftChild = current->RightChild;
+
+				B.root = current->LeftChild;
+
+				
+
+			}
+
+			else {
+
+				prev->RightChild = current->LeftChild;
+
+				B.root = current->RightChild;
+
+
+
+			}
+
+			C.root = root;
+
+			x = current->data;
+
+			return;
+
+		}
+
+		else if (i < current->data) {
+
+			prev = current;
+
+			mode = 0;
+
+			current = current->LeftChild;
+
+		}
+
+		else {
+
+			prev = current;
+
+			mode = 1;
+
+			current = current->RightChild;
+
+		}
+
+
+
+	return;
+
+}
 int Tree::Delete(int elm) {
-	//leaf node를 삭제하는 경우
-	//non-leaf node를 삭제하는 경우에는 inorder successor로 replace 한후에 leaf node를 삭제하도록 구현해야 한다. 
+	TreeNode* a = root->LeftChild;
+	TreeNode* p = root;
+
+	while(1){
+		if(a->data < elm){
+			if(a->RightChild)
+				return 0;
+			p=a;
+			a=a->RightChild;
+		}
+		else if(a->data > elm){
+			if(a->LeftChild)
+				return 0;
+			p=a;
+			a=a->LeftChild;
+		}
+		else{
+			break;
+		}
+		
+	}
+
 	return 0;
 }
+
 void Tree::NonrecInorder()//void Tree::inorder(TreeNode *CurrentNode)와 비교
 {
 	Stack<TreeNode*> s;
@@ -468,7 +557,7 @@ int main(void)
 			cout << "The number of items = ";
 			cin >> max;
 			for (int i = 0; i < max; i++) {
-				rnd = rand() / 100;
+				rnd = rand() / 10;
 				if (!t.Insert(rnd)) cout << "Insert Duplicated data" << endl;
 			}
 

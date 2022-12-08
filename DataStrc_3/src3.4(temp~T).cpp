@@ -15,8 +15,7 @@ public:
     void push_back(T const& x);
     void pop_front();
     void pop_back();
-    void show_data_count();
-    void show_push();
+    void show_data();
     
 private:
     T* deque;
@@ -63,8 +62,8 @@ void Deque<T>::push_front(T const& x){
         //delete[] deque;
         deque=newDeque;
     }
-    front--;
-    deque[front] = x;
+    
+    deque[--front] = x;
     count ++;
 }
 
@@ -79,11 +78,10 @@ void Deque<T>::push_back(T const& x){
         back=2*(capacity/3); // 약 2/3지점으로 이동
         front=back-count+1;
         capacity*=2;
-        //delete[] deque;
+        delete[] deque;
         deque=newDeque;
     }
-    back++;
-    deque[back]=x;
+    deque[++back]=x;
     count ++;
 }
 
@@ -91,8 +89,7 @@ template <class T>
 void Deque<T>::pop_front(){
     if(IsEmpty()) throw "Deque is empty! Can't delete.";
     count --;
-    deque[front]="";
-    front ++;
+    deque[front++].~T();
     
 }
 
@@ -100,25 +97,16 @@ template <class T>
 void Deque<T>::pop_back(){
     if(IsEmpty()) throw "Deque is empty! Can't delete.";
     count --;
-    deque[back]="";
-    back--;
+    deque[back--].~T();
 }
 
 template <class T>
-void Deque<T>::show_data_count(){
-    printf("\nData count = ");
+void Deque<T>::show_data(){
     printf("%d\n" ,count);
-    // for (int i=0; i<count+1; i++){
-    //     printf("%s", &deque[i]);
-    // }
-    // printf("\n");
-}
-template <class T>
-void Deque<T>::show_push(){
-    for (int i=0; i<count+1; i++){
+    for (int i=0; i<count; i++){
         printf("%s", &deque[i]);
     }
-     printf("\n");
+    printf("\n");
 }
 
 template <class T>
@@ -131,7 +119,7 @@ int main(){
         d.push_front("a");
         d.push_back("b");
     }
-    d.show_push();
+    
 
     if (d.IsEmpty()){
         cout<<"empty"<<endl;
@@ -141,7 +129,7 @@ int main(){
     }
 
     while (!d.IsEmpty()){
-        d.show_data_count();
+        d.show_data();
         cout<<"Front_pop is : "<<d.Front()<<endl;
         d.pop_front();
         cout<<"Back_pop is : "<<d.Back()<<endl;
@@ -150,4 +138,3 @@ int main(){
     system("pause");
     return 0;
 }
-
