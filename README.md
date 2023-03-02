@@ -1,5 +1,5 @@
-# DataStructure_22_second
-# C++을 기반으로 한 자료구조 수업
+# DataStructure with C++
+# C++을 기반으로 한 자료구조 구현
 ---
 # 방식
 - Stack, Queue, Linked List, Tree, Heap, Graph등의 자료구조를 STL을 사용하지 않고 구현해본다.
