@@ -1,6 +1,6 @@
 # DataStructure with C++
-# C++을 기반으로 한 자료구조 구현
----
+> C++을 기반으로 한 자료구조 구현
+
 ## 설명
 - Stack, Queue, Linked List, Tree, Heap, Graph등의 자료구조를 STL을 사용하지 않고 구현해본다.
 - 구현한 자료구조는 다음 자료구조를 구현할 때 활용한다.
