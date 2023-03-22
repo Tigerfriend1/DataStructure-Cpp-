@@ -1,8 +1,10 @@
-﻿//소스코드 5.1: binary tree
+﻿//201624459_김태경 자료구조 기말고사 제출
 //#pragma once
 
 //기말고사
 // 1. class Studernt 구현, treenode 데이터 Student 객체 사용
+// 2. insert 후 출력(난수입력)
+// 3. stackpostorder(); work 함수로 구현
 
 #include <time.h>
 #include <iostream>
@@ -404,7 +406,6 @@ int Tree::Delete(Student elm) {
 		else{
 			break;
 		}
-		
 	}
 
 	return 0;
@@ -417,14 +418,13 @@ int main(void)
 	srand(time(NULL));
 	Tree t;
 	int eq = -1;
-	char select = 'i';
 	int max = 0, x = 0;
 	for (int i = 0; i<30; i++){ //30개의 Student객체를 Insert한다.
 		Student x(rand()%100, (rand()%45)/10, rand()%30);
 		cout << x <<endl; //student 객체 출력
 		t.Insert(x); // insert후 출력
 	}
-	int delete();
+	int delete(x);
 	void stackpostorder(); // stackpostorder 출력 //work함수형식으로 구현
 	
 	system("pause");
